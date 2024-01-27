@@ -1,0 +1,50 @@
+[default]
+DEBUG = false
+FLASK_ADMIN_NAME = "Healthcare Bluestorm System"
+FLASK_ADMIN_TEMPLATE_MODE = "bootstrap3"
+FLASK_ADMIN_SWATCH = 'cerulean'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///backend_test.db'
+TITLE = "Healthcare Bluestorm System"
+SECRET_KEY = "jadkfbsdkjbfbh"
+
+PASSWORD_SCHEMES = ['pbkdf2_sha512', 'md5_crypt']
+EXTENSIONS = [
+    "healthcare_bluestorm_system.ext.appearance",
+    "healthcare_bluestorm_system.ext.serialization",
+    "healthcare_bluestorm_system.ext.database",
+    "healthcare_bluestorm_system.ext.auth",
+    "healthcare_bluestorm_system.ext.admin",
+    "healthcare_bluestorm_system.ext.commands",
+    "healthcare_bluestorm_system.blueprints.webui",
+    "healthcare_bluestorm_system.blueprints.restapi"
+]
+
+
+
+
+[development]
+
+TEMPLATES_AUTO_RELOAD = true
+DEBUG = true
+DEBUG_TOOLBAR_ENABLED = true
+DEBUG_TB_INTERCEPT_REDIRECTS = false
+DEBUG_TB_PROFILER_ENABLED = true
+DEBUG_TB_TEMPLATE_EDITOR_ENABLED = true
+DEBUG_TB_PANELS = [
+    "flask_debugtoolbar.panels.versions.VersionDebugPanel",
+    "flask_debugtoolbar.panels.sqlalchemy.SQLAlchemyDebugPanel",
+    "flask_debugtoolbar.panels.timer.TimerDebugPanel",
+    "flask_debugtoolbar.panels.headers.HeaderDebugPanel",
+    "flask_debugtoolbar.panels.request_vars.RequestVarsDebugPanel",
+    "flask_debugtoolbar.panels.template.TemplateDebugPanel",
+    "flask_debugtoolbar.panels.route_list.RouteListDebugPanel",
+    "flask_debugtoolbar.panels.logger.LoggingPanel",
+    "flask_debugtoolbar.panels.profiler.ProfilerDebugPanel",
+    "flask_debugtoolbar.panels.config_vars.ConfigVarsDebugPanel"
+]
+
+[testing]
+SQLALCHEMY_DATABASE_URI = 'sqlite:///backend_test.db'
+
+[production]
+SQLALCHEMY_DATABASE_URI = 'sqlite:///backend_test.db'
