@@ -9,7 +9,7 @@ from healthcare_bluestorm_system.ext.database import db
 import jwt
 import dynaconf
 
-SECRET_KEY = "bluestorm"
+SECRET_KEY = dynaconf.settings.SECRET_KEY
 
 class UserAuthenticationResource(Resource):
     def post(self):
@@ -25,10 +25,10 @@ class UserAuthenticationResource(Resource):
         if user.password != password:
             abort(403,description="Your credentials are incorrect!")
         
-        validity = datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
+        validity = datetime.datetime.now() + datetime.timedelta(minutes=5)
         payload ={
             "id": user.uuid,
-            "exp": validity
+            "expire": validity.timestamp()
         }
 
         token = jwt.encode(payload,SECRET_KEY)
@@ -38,6 +38,32 @@ class PatientListResource(Resource):
 
     def get(self):
         try:
+            token_jwt =  request.headers.get('token')
+            uuid =  request.headers.get('uuid')
+            user_decoded =jwt.decode(token_jwt, SECRET_KEY,algorithms=['HS256'])
+            user = User.query.filter_by(uuid=uuid).first() 
+
+            date_and_hour_now = datetime.datetime.now() - datetime.timedelta(minutes=1)
+            date_and_hour_now = date_and_hour_now.timestamp()
+            if user is None:
+                return abort(
+                 code =  404,
+                 description ="Result not found."
+                )
+            
+            elif user.uuid != user_decoded.get('id'):
+                return abort(
+                code=403,
+                description= "you don't have permission to perform this action."
+                )
+           
+
+            elif user_decoded.get('expire') < date_and_hour_now :
+                return abort(
+                    code = 401,
+                    description =  "You are not allowed to access this route without a token."
+                )
+
             patients = Patient.query.all()
             if len(patients) == 0 :
                 return []
@@ -50,6 +76,32 @@ class PharmacyListResource(Resource):
 
     def get(self):
         try:
+            token_jwt =  request.headers.get('token')
+            uuid =  request.headers.get('uuid')
+            user_decoded =jwt.decode(token_jwt, SECRET_KEY,algorithms=['HS256'])
+            user = User.query.filter_by(uuid=uuid).first() 
+            
+            date_and_hour_now = datetime.datetime.now() - datetime.timedelta(minutes=1)
+            date_and_hour_now = date_and_hour_now.timestamp()
+            if user is None:
+                return abort(
+                 code =  404,
+                 description ="Result not found."
+                )
+            
+            elif user.uuid != user_decoded.get('id'):
+                return abort(
+                code=403,
+                description= "you don't have permission to perform this action."
+                )
+           
+
+            elif user_decoded.get('expire') < date_and_hour_now :
+                return abort(
+                    code = 401,
+                    description =  "You are not allowed to access this route without a token."
+                )
+
             pharmacies = Pharmacy.query.all()
             if len(pharmacies) == 0 :
                 return []
@@ -61,6 +113,30 @@ class TransactionListResource(Resource):
 
     def get(self):
         try:
+            token_jwt =  request.headers.get('token')
+            uuid =  request.headers.get('uuid')
+            user_decoded =jwt.decode(token_jwt, SECRET_KEY,algorithms=['HS256'])
+            user = User.query.filter_by(uuid=uuid).first() 
+            if user.uuid != user_decoded.get('id'):
+                abort(
+                code=403,
+                description= "you don't have permission to perform this action."
+                )
+            date_and_hour_now = datetime.datetime.now() - datetime.timedelta(minutes=1)
+            date_and_hour_now = date_and_hour_now.timestamp()
+
+            if user_decoded.get('expire') < date_and_hour_now :
+                abort(
+                    code = 401,
+                    description =  "You are not allowed to access this route without a token."
+                )
+
+            if user is None:
+                abort(
+                 code =  404,
+                 description ="Result not found."
+                )
+            
             transactions = Transaction.query.all()
             if len(transactions) == 0 :
                 return []
