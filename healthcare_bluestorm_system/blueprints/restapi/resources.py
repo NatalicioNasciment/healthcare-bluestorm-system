@@ -45,7 +45,13 @@ class PatientListResource(Resource):
 
             authenticate_user(token_jwt, uuid)
 
-            patients = Patient.query.all()
+            query = Patient.query
+
+            filters = [getattr(Patient, param) == value.upper() for param, value in request.args.items()]
+
+            query = query.filter(*filters)
+            
+            patients = query.all()
             if len(patients) == 0 :
                 return []
             
@@ -63,9 +69,16 @@ class PharmacyListResource(Resource):
 
             authenticate_user(token_jwt, uuid)
 
-            pharmacies = Pharmacy.query.all()
+            query = Pharmacy.query
+
+            filters = [getattr(Pharmacy, param) == value.upper() for param, value in request.args.items()]
+
+            query = query.filter(*filters)
+            
+            pharmacies = query.all()
             if len(pharmacies) == 0 :
                 return []
+
             return jsonify(pharmacies_schema.dump(pharmacies))
         except ValueError as err:
             abort(code=500,description=err)
@@ -79,8 +92,17 @@ class TransactionListResource(Resource):
             uuid =  request.headers.get('uuid')
            
             authenticate_user(token_jwt, uuid)
+
+            query = Transaction.query
+
+            filters = [getattr(Transaction, param) == value.upper() for param, value in request.args.items()]
+
+            query = query.filter(*filters)
             
-            transactions = Transaction.query.all()
+            transactions = query.all()
+            if len(transactions) == 0 :
+                return []
+            
             if len(transactions) == 0 :
                 return []
             return jsonify(transactions_schema.dump(transactions))
