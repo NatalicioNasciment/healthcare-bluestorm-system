@@ -5,7 +5,7 @@ FLASK_ADMIN_TEMPLATE_MODE = "bootstrap3"
 FLASK_ADMIN_SWATCH = 'cerulean'
 SQLALCHEMY_DATABASE_URI = 'sqlite:///backend_test.db'
 TITLE = "Healthcare Bluestorm System"
-SECRET_KEY = "jadkfbsdkjbfbh"
+SECRET_KEY = "bluestorm"
 
 PASSWORD_SCHEMES = ['pbkdf2_sha512', 'md5_crypt']
 EXTENSIONS = [
