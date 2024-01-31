@@ -6,7 +6,7 @@ from flask_restful import Resource,reqparse
 from sqlalchemy import except_
 from healthcare_bluestorm_system.models import(Patient, Pharmacy, Transaction, patients_schema, pharmacies_schema, transactions_schema, User)
 from healthcare_bluestorm_system.ext.database import db
-from healthcare_bluestorm_system.helpers.api import validate_headers, authenticate_user
+from healthcare_bluestorm_system.helpers.api import validate_headers, authenticate_user, list_params, filter_model
 import jwt
 import dynaconf
 
@@ -45,7 +45,8 @@ class PatientListResource(Resource):
 
             authenticate_user(token_jwt, uuid)
 
-            patients = Patient.query.all()
+            patients = filter_model(Patient, request.args)
+
             if len(patients) == 0 :
                 return []
             
@@ -63,9 +64,11 @@ class PharmacyListResource(Resource):
 
             authenticate_user(token_jwt, uuid)
 
-            pharmacies = Pharmacy.query.all()
+            pharmacies = filter_model(Pharmacy, request.args)
+
             if len(pharmacies) == 0 :
                 return []
+
             return jsonify(pharmacies_schema.dump(pharmacies))
         except ValueError as err:
             abort(code=500,description=err)
@@ -79,8 +82,12 @@ class TransactionListResource(Resource):
             uuid =  request.headers.get('uuid')
            
             authenticate_user(token_jwt, uuid)
+
+            transactions = filter_model(Transaction, request.args)
             
-            transactions = Transaction.query.all()
+            if len(transactions) == 0 :
+                return []
+            
             if len(transactions) == 0 :
                 return []
             return jsonify(transactions_schema.dump(transactions))

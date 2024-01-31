@@ -25,3 +25,19 @@ def authenticate_user(token_jwt, uuid):
 
     if token_expire_time < current_time:
         abort(401, description="Token has expired.")
+
+def list_params():
+    return ["first_name","last_name","uuid","city","name","amount"]
+
+def filter_model(model, query_params):
+    query = model.query
+
+    params = list_params()
+    filters = [
+        getattr(model, param).like(f"%{value.upper()}%") if param in params else getattr(model, param) == value
+        for param, value in query_params.items()
+    ]
+
+    query = query.filter(*filters)
+
+    return query.all()
