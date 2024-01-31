@@ -6,7 +6,7 @@ from flask_restful import Resource,reqparse
 from sqlalchemy import except_
 from healthcare_bluestorm_system.models import(Patient, Pharmacy, Transaction, patients_schema, pharmacies_schema, transactions_schema, User)
 from healthcare_bluestorm_system.ext.database import db
-from healthcare_bluestorm_system.helpers.api import validate_headers, authenticate_user
+from healthcare_bluestorm_system.helpers.api import validate_headers, authenticate_user, list_params, filter_model
 import jwt
 import dynaconf
 
@@ -45,13 +45,8 @@ class PatientListResource(Resource):
 
             authenticate_user(token_jwt, uuid)
 
-            query = Patient.query
+            patients = filter_model(Patient, request.args)
 
-            filters = [getattr(Patient, param) == value.upper() for param, value in request.args.items()]
-
-            query = query.filter(*filters)
-            
-            patients = query.all()
             if len(patients) == 0 :
                 return []
             
@@ -69,13 +64,8 @@ class PharmacyListResource(Resource):
 
             authenticate_user(token_jwt, uuid)
 
-            query = Pharmacy.query
+            pharmacies = filter_model(Pharmacy, request.args)
 
-            filters = [getattr(Pharmacy, param) == value.upper() for param, value in request.args.items()]
-
-            query = query.filter(*filters)
-            
-            pharmacies = query.all()
             if len(pharmacies) == 0 :
                 return []
 
@@ -93,13 +83,8 @@ class TransactionListResource(Resource):
            
             authenticate_user(token_jwt, uuid)
 
-            query = Transaction.query
-
-            filters = [getattr(Transaction, param) == value.upper() for param, value in request.args.items()]
-
-            query = query.filter(*filters)
+            transactions = filter_model(Transaction, request.args)
             
-            transactions = query.all()
             if len(transactions) == 0 :
                 return []
             
