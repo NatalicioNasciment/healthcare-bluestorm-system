@@ -2,8 +2,8 @@
 DEBUG = false
 FLASK_ADMIN_NAME = "Healthcare Bluestorm System"
 FLASK_ADMIN_TEMPLATE_MODE = "bootstrap3"
-FLASK_ADMIN_SWATCH = 'cerulean'
-SQLALCHEMY_DATABASE_URI = 'sqlite:///backend_test.db'
+FLASK_ADMIN_SWATCH = 'bluestorm'
+SQLALCHEMY_DATABASE_URI = 'sqlite:////mnt/c/Users/francisco.nascimento/Downloads/backend_test.db'
 TITLE = "Healthcare Bluestorm System"
 SECRET_KEY = "bluestorm"
 
