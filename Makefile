@@ -6,11 +6,10 @@ help:
 
 all: clean install test 
 
-# test:
-# 	pytest healthcare_bluestorm_system/tests -v
+test:
+	pytest healthcare_bluestorm_system/tests -v
 
 install:
-
 	pip install --upgrade pip
 	pip install  -e .['dev']
 	pip install -r requirements.txt
